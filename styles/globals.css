@@ -44,3 +44,41 @@ a {
     color-scheme: dark;
   }
 }
+
+/* PDF page-break handling */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid;
+    break-inside: avoid-page;
+  }
+}
+
+.modern .contact p {
+  color: white !important;
+}
+
+/* styles/globals.css */
+
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 8s ease infinite;
+}

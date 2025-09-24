@@ -1,4 +1,5 @@
 // pages/dashboard.tsx
+import React from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -380,7 +381,7 @@ function Card({
   title,
   desc,
 }: {
-  icon: JSX.Element;
+  icon: React.ReactNode; // ✅ works better with Next.js
   title: string;
   desc: string;
 }) {

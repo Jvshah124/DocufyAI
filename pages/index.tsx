@@ -1,4 +1,5 @@
 // pages/index.tsx
+import React from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Typewriter } from "react-simple-typewriter";
@@ -227,7 +228,7 @@ function FeatureCard({
   title,
   desc,
 }: {
-  icon: JSX.Element;
+  icon: React.ReactNode;
   title: string;
   desc: string;
 }) {

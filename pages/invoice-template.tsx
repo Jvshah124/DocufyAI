@@ -1,5 +1,7 @@
 // pages/invoice-template.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
+import { useRouter } from "next/router";
 
 const uid = () => Math.random().toString(36).slice(2, 9);
 const safe = (v: any) => (v === undefined || v === null ? "" : v);
@@ -41,6 +43,33 @@ export default function InvoiceTemplate() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [theme, setTheme] = useState("blue");
+
+  const [user, setUser] = useState<any>(null);
+  const [isPro, setIsPro] = useState(false);
+  const router = useRouter();
+
+  // 🟢 Fetch user + subscription status
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/auth");
+        return;
+      }
+      setUser(user);
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("subscription_status")
+        .eq("id", user.id)
+        .single();
+
+      setIsPro(profile?.subscription_status === "pro");
+    };
+    fetchUser();
+  }, [router]);
 
   const recalcTotals = (curr: any) => {
     const items = curr.items || [];
@@ -111,7 +140,7 @@ export default function InvoiceTemplate() {
         due_date: data.due_date || invoice.due_date,
         from: data.from || invoice.from,
         to: data.to || invoice.to,
-        items: (data.items || []).map((it: any, i: number) => ({
+        items: (data.items || []).map((it: any) => ({
           id: uid(),
           description: it.description || "",
           quantity: it.quantity || 1,
@@ -134,8 +163,12 @@ export default function InvoiceTemplate() {
     }
   };
 
-  // Download PDF
+  // Download PDF (Pro-only)
   const downloadPDF = async () => {
+    if (!isPro) {
+      alert("Downloads are Pro-only. Please upgrade your plan.");
+      return;
+    }
     try {
       setIsDownloading(true);
       const res = await fetch("/api/export-pdf", {

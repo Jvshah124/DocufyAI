@@ -1,6 +1,8 @@
 // pages/resume-template.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { supabase } from "../lib/supabaseClient";
+import { getUserProfile, incrementDocs } from "../lib/profile"; // ✅ added
 
 // helper to avoid "undefined" text
 const safe = (val: any) => (val === undefined || val === null ? "" : val);
@@ -41,7 +43,8 @@ export default function ResumeTemplate() {
   const [theme, setTheme] = useState("blue");
   const [isPreview, setIsPreview] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
-  const [aiPrompt, setAiPrompt] = useState(""); // <-- new state for AI context
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [profile, setProfile] = useState<any>(null); // ✅ new
 
   const themes: any = {
     blue: { primary: "#1d4ed8", secondary: "#3b82f6", light: "#e0f2fe" },
@@ -49,6 +52,16 @@ export default function ResumeTemplate() {
     purple: { primary: "#7c3aed", secondary: "#8b5cf6", light: "#ede9fe" },
     orange: { primary: "#d97706", secondary: "#f59e0b", light: "#fef3c7" },
   };
+
+  // 🟢 Fetch profile
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (user) {
+        const prof = await getUserProfile(user.id);
+        setProfile(prof);
+      }
+    });
+  }, []);
 
   // 🟢 AI Generate Resume (with prompt support)
   const generateWithAI = async () => {
@@ -75,8 +88,30 @@ export default function ResumeTemplate() {
     }
   };
 
-  // 🟢 PDF Download
+  // 🟢 PDF Download (with limit checks)
   const downloadPDF = async () => {
+    if (!profile) {
+      alert("Loading your profile… please wait.");
+      return;
+    }
+
+    if (profile.subscription_status === "free") {
+      alert("Downloads are Pro-only. Please upgrade your plan.");
+      return;
+    }
+
+    if (profile.docs_generated >= profile.docs_limit) {
+      alert("You’ve reached your download limit.");
+      return;
+    }
+
+    // Increment doc count
+    const ok = await incrementDocs(profile.id);
+    if (!ok) {
+      alert("Could not update usage — limit may have been reached.");
+      return;
+    }
+
     try {
       const response = await fetch("/api/export-pdf", {
         method: "POST",

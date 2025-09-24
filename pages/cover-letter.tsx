@@ -1,5 +1,7 @@
 // pages/cover-letter.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
+import { useRouter } from "next/router";
 
 export default function CoverLetter() {
   const [letter, setLetter] = useState<any>({
@@ -10,9 +12,34 @@ export default function CoverLetter() {
     closing: "",
     signature: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState(""); // 🟢 new field for custom AI prompt
+  const [user, setUser] = useState<any>(null);
+  const [isPro, setIsPro] = useState(false);
+  const router = useRouter();
+
+  // 🟢 Fetch user + subscription status
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/auth");
+        return;
+      }
+      setUser(user);
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("subscription_status")
+        .eq("id", user.id)
+        .single();
+
+      setIsPro(profile?.subscription_status === "pro");
+    };
+    fetchUser();
+  }, [router]);
 
   // 🟢 Generate with AI (with prompt)
   const generateWithAI = async () => {
@@ -26,9 +53,7 @@ export default function CoverLetter() {
           prompt, // pass custom prompt
         }),
       });
-
       if (!response.ok) throw new Error("AI generation failed");
-
       const data = await response.json();
       setLetter(data); // Replace with AI JSON
     } catch (err) {
@@ -39,8 +64,12 @@ export default function CoverLetter() {
     }
   };
 
-  // 🟢 Download PDF
+  // 🟢 Download PDF (Pro-only)
   const downloadPDF = async () => {
+    if (!isPro) {
+      alert("Downloads are Pro-only. Please upgrade your plan.");
+      return;
+    }
     try {
       const response = await fetch("/api/export-pdf", {
         method: "POST",
@@ -50,9 +79,7 @@ export default function CoverLetter() {
           data: letter,
         }),
       });
-
       if (!response.ok) throw new Error("Failed to generate PDF");
-
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");

@@ -619,8 +619,7 @@ export default function ResumeTemplate() {
                   setContact({ ...contact, portfolio: e.target.value })
                 }
                 placeholder="Portfolio"
-                className="border rounded px-2 py-1 w-full"
-                className="sm:col-span-2"
+                className="border rounded px-2 py-1 w-full sm:col-span-2"
               />
             </div>
           </div>

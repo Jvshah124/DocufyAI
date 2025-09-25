@@ -1,6 +1,7 @@
 // pages/api/export-pdf.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,17 +12,14 @@ export default async function handler(
   }
 
   try {
-    const { docType, data, theme } = req.body;
-
+    const { docType, data, theme } = req.body || {};
     const themes: any = {
       blue: { primary: "#1d4ed8", secondary: "#3b82f6", light: "#e0f2fe" },
       green: { primary: "#059669", secondary: "#10b981", light: "#d1fae5" },
       purple: { primary: "#7c3aed", secondary: "#8b5cf6", light: "#ede9fe" },
       orange: { primary: "#d97706", secondary: "#f59e0b", light: "#fef3c7" },
     };
-
     const t = themes[theme || "blue"];
-
     const safe = (v: any) => (v === undefined || v === null ? "" : v);
 
     const renderItems = (items: any[] = []) =>
@@ -53,7 +51,6 @@ export default async function handler(
         )
         .join("");
 
-    // Dynamic section renderer for resume-like content
     const renderSection = (section: any) => {
       if (!section) return "";
       if (section.type === "summary") {
@@ -64,7 +61,6 @@ export default async function handler(
           </div>
         `;
       }
-
       if (section.type === "skills") {
         return `
           <div class="section">
@@ -77,7 +73,6 @@ export default async function handler(
           </div>
         `;
       }
-
       if (section.type === "experience") {
         return `
           <div class="section">
@@ -85,27 +80,27 @@ export default async function handler(
             ${(section.items || [])
               .map(
                 (job: any) => `
-              <div class="job">
-                <h3>${safe(job.role || job.text || "")}${
+                <div class="job">
+                  <h3>${safe(job.role || job.text || "")}${
                   job.company ? ` — ${safe(job.company)}` : ""
                 }</h3>
-                <p class="meta">${[safe(job.period), safe(job.location)]
-                  .filter(Boolean)
-                  .join(" • ")}</p>
-                ${
-                  job.achievements && job.achievements.length
-                    ? `<ul>${(job.achievements || [])
-                        .map((a: any) => `<li>${safe(a)}</li>`)
-                        .join("")}</ul>`
-                    : ""
-                }
-              </div>`
+                  <p class="meta">${[safe(job.period), safe(job.location)]
+                    .filter(Boolean)
+                    .join(" • ")}</p>
+                  ${
+                    job.achievements && job.achievements.length
+                      ? `<ul>${(job.achievements || [])
+                          .map((a: any) => `<li>${safe(a)}</li>`)
+                          .join("")}</ul>`
+                      : ""
+                  }
+                </div>
+              `
               )
               .join("")}
           </div>
         `;
       }
-
       if (
         [
           "education",
@@ -122,11 +117,9 @@ export default async function handler(
           </div>
         `;
       }
-
       return "";
     };
 
-    // Resume templates (unchanged)
     const buildClassic = () => `
       <div class="page classic">
         <aside class="sidebar" style="background:${t.light}">
@@ -144,7 +137,6 @@ export default async function handler(
         </main>
       </div>
     `;
-
     const buildModern = () => `
       <div class="page modern">
         <header class="header" style="background:linear-gradient(135deg, ${
@@ -167,7 +159,6 @@ export default async function handler(
         </main>
       </div>
     `;
-
     const buildMinimal = () => `
       <div class="page minimal">
         <h1>${safe(data?.name)}</h1>
@@ -183,57 +174,50 @@ export default async function handler(
       </div>
     `;
 
-    // Cover Letter template
     const buildCoverLetter = (letter: any) => `
-    <div class="page cover-letter" style="padding:40px;font-family:Arial,sans-serif;line-height:1.6;">
-      <!-- Header: Name + Contact -->
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div>
-          <h1 style="margin:0;font-size:26px;font-weight:bold;color:${
-            t.primary
-          };">${letter?.sender?.name || ""}</h1>
-          <p style="margin:0;font-size:14px;color:#666;">${
-            letter?.title || ""
-          }</p>
+      <div class="page cover-letter" style="padding:40px;font-family:Arial,sans-serif;line-height:1.6;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div>
+            <h1 style="margin:0;font-size:26px;font-weight:bold;color:${
+              t.primary
+            };">${letter?.sender?.name || ""}</h1>
+            <p style="margin:0;font-size:14px;color:#666;">${
+              letter?.title || ""
+            }</p>
+          </div>
+          <div style="text-align:right;font-size:12px;color:#444;">
+            <div>📧${letter?.sender?.email || ""}</div>
+            <div>📞${letter?.sender?.phone || ""}</div>
+            <div>📍${letter?.sender?.location || ""}</div>
+          </div>
         </div>
-        <div style="text-align:right;font-size:12px;color:#444;">
-          <div>📧${letter?.sender?.email || ""}</div>
-          <div>📞${letter?.sender?.phone || ""}</div>
-          <div>📍${letter?.sender?.location || ""}</div>
-        </div>
-      </div>
-  
-      <!-- Cover Letter Label -->
-      <h2 style="margin:0 0 6px 0;font-size:16px;font-weight:bold;border-bottom:2px solid ${
-        t.primary
-      };padding-bottom:4px;">
-        COVER LETTER
-      </h2>
-  
-      <!-- Date + Recipient -->
-      <div style="margin:20px 0;font-size:13px;">
-        <div>${letter?.date || ""}</div>
-        <div>${letter?.recipient?.name || ""}</div>
-        <div>${letter?.recipient?.company || ""}</div>
-        <div>${letter?.recipient?.address || ""}</div>
-      </div>
-  
-      <!-- Body (only one Dear Hiring Manager here, avoid duplicate) -->
-      <div style="margin:20px 0;font-size:13px;white-space:pre-line;">
-        ${letter?.body || ""}
-      </div>
-  
-      <!-- Closing -->
-      <div style="margin-top:40px;font-size:13px;">
-        <div>${letter?.closing || ""},</div>
-        <div style="margin-top:40px;font-weight:bold;">${
-          letter?.signature || ""
-        }</div>
-      </div>
-    </div>
-  `;
 
-    // Invoice template (unchanged)
+        <h2 style="margin:0 0 6px 0;font-size:16px;font-weight:bold;border-bottom:2px solid ${
+          t.primary
+        };padding-bottom:4px;">
+          COVER LETTER
+        </h2>
+
+        <div style="margin:20px 0;font-size:13px;">
+          <div>${letter?.date || ""}</div>
+          <div>${letter?.recipient?.name || ""}</div>
+          <div>${letter?.recipient?.company || ""}</div>
+          <div>${letter?.recipient?.address || ""}</div>
+        </div>
+
+        <div style="margin:20px 0;font-size:13px;white-space:pre-line;">
+          ${letter?.body || ""}
+        </div>
+
+        <div style="margin-top:40px;font-size:13px;">
+          <div>${letter?.closing || ""},</div>
+          <div style="margin-top:40px;font-weight:bold;">${
+            letter?.signature || ""
+          }</div>
+        </div>
+      </div>
+    `;
+
     const buildInvoice = (invoice: any) => {
       const inv = invoice || {};
       const formatMoney = (v: any) => {
@@ -243,7 +227,6 @@ export default async function handler(
           maximumFractionDigits: 2,
         });
       };
-
       const itemsHtml = (inv.items || [])
         .map(
           (it: any, idx: number) => `
@@ -267,7 +250,6 @@ export default async function handler(
         `
         )
         .join("");
-
       return `
         <div class="page invoice">
           <header style="display:flex;justify-content:space-between;align-items:center;padding:20px 0;">
@@ -290,7 +272,6 @@ export default async function handler(
       )}</p>
             </div>
           </header>
-
           <section style="margin-top:20px;display:flex;justify-content:space-between;padding-bottom:10px;">
             <div>
               <h4 style="margin:0 0 6px 0;">Bill To</h4>
@@ -303,7 +284,6 @@ export default async function handler(
       }</p>
             </div>
           </section>
-
           <table style="width:100%;border-collapse:collapse;margin-top:16px;border:1px solid #eee;">
             <thead>
               <tr style="background:#fafafa;">
@@ -314,59 +294,39 @@ export default async function handler(
                 <th style="text-align:right;padding:8px;border-bottom:1px solid #eee;">Total</th>
               </tr>
             </thead>
-            <tbody>
-              ${itemsHtml}
-            </tbody>
+            <tbody>${itemsHtml}</tbody>
           </table>
-
           <div style="display:flex;justify-content:flex-end;margin-top:16px;">
             <table style="width:320px;">
-              <tr>
-                <td style="padding:6px 8px;">Sub Total</td>
-                <td style="padding:6px 8px;text-align:right;">${formatMoney(
-                  inv.sub_total || 0
-                )}</td>
-              </tr>
-              <tr>
-                <td style="padding:6px 8px;">Tax</td>
-                <td style="padding:6px 8px;text-align:right;">${formatMoney(
-                  inv.tax || 0
-                )}</td>
-              </tr>
-              <tr>
-                <td style="padding:6px 8px;">Discount</td>
-                <td style="padding:6px 8px;text-align:right;">${formatMoney(
-                  inv.discount || 0
-                )}</td>
-              </tr>
-              <tr style="font-weight:bold;">
-                <td style="padding:8px 8px;border-top:1px solid #eee;">Total</td>
-                <td style="padding:8px 8px;border-top:1px solid #eee;text-align:right;">${formatMoney(
-                  inv.total || 0
-                )}</td>
-              </tr>
+              <tr><td style="padding:6px 8px;">Sub Total</td><td style="padding:6px 8px;text-align:right;">${formatMoney(
+                inv.sub_total || 0
+              )}</td></tr>
+              <tr><td style="padding:6px 8px;">Tax</td><td style="padding:6px 8px;text-align:right;">${formatMoney(
+                inv.tax || 0
+              )}</td></tr>
+              <tr><td style="padding:6px 8px;">Discount</td><td style="padding:6px 8px;text-align:right;">${formatMoney(
+                inv.discount || 0
+              )}</td></tr>
+              <tr style="font-weight:bold;"><td style="padding:8px 8px;border-top:1px solid #eee;">Total</td><td style="padding:8px 8px;border-top:1px solid #eee;text-align:right;">${formatMoney(
+                inv.total || 0
+              )}</td></tr>
             </table>
           </div>
-
-          <footer style="margin-top:20px;">
-            <p style="color:#666;">${safe(inv.notes)}</p>
-          </footer>
+          <footer style="margin-top:20px;"><p style="color:#666;">${safe(
+            inv.notes
+          )}</p></footer>
         </div>
       `;
     };
 
-    // Choose content
     let content = "";
     if (docType === "classic") content = buildClassic();
     else if (docType === "modern") content = buildModern();
     else if (docType === "minimal") content = buildMinimal();
     else if (docType === "invoice") content = buildInvoice(data || {});
     else if (docType === "cover_letter") content = buildCoverLetter(data || {});
-    else {
-      content = buildModern();
-    }
+    else content = buildModern();
 
-    // Full HTML + shared CSS
     const html = `
       <html>
         <head>
@@ -397,9 +357,16 @@ export default async function handler(
       </html>
     `;
 
+    // --- LAUNCH CHROMIUM on Vercel using sparticuz ---
+    const executablePath = await chromium.executablePath();
     const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: chromium.args,
+      executablePath,
+      headless: true,
+      ignoreHTTPSErrors: true,
+      defaultViewport: { width: 1200, height: 800 },
     });
+
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
 
@@ -416,9 +383,9 @@ export default async function handler(
       "Content-Disposition",
       `attachment; filename=${docType || "document"}.pdf`
     );
-    res.setHeader("Content-Length", pdfBuffer.length);
+    res.setHeader("Content-Length", String(pdfBuffer.length));
     res.end(pdfBuffer);
-  } catch (error) {
+  } catch (error: any) {
     console.error("PDF export error:", error);
     res
       .status(500)

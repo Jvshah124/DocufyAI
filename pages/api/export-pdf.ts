@@ -363,9 +363,8 @@ export default async function handler(
       args: chromium.args,
       executablePath,
       headless: true,
-      ignoreHTTPSErrors: true,
-      defaultViewport: { width: 1200, height: 800 },
-    });
+      // 👇 Cast to any so TS won’t complain on Vercel
+    } as any);
 
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });

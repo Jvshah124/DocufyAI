@@ -12,6 +12,7 @@ export default function CoverLetter() {
     closing: "",
     signature: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState(""); // 🟢 new field for custom AI prompt
   const [user, setUser] = useState<any>(null);
@@ -104,7 +105,7 @@ export default function CoverLetter() {
         </label>
         <input
           type="text"
-          className="border rounded w-full px-2 py-1"
+          className="border rounded w-full px-2 py-1 bg-white text-black"
           value={prompt}
           placeholder="e.g. Software Engineer at Google"
           onChange={(e) => setPrompt(e.target.value)}
@@ -133,7 +134,7 @@ export default function CoverLetter() {
       <div className="mb-4">
         <h2 className="font-semibold mb-2">Sender</h2>
         <input
-          className="border rounded w-full px-2 py-1 mb-1"
+          className="border rounded w-full px-2 py-1 mb-1 bg-white text-black"
           value={letter.sender.name || ""}
           placeholder="Your Name"
           onChange={(e) =>
@@ -144,7 +145,7 @@ export default function CoverLetter() {
           }
         />
         <input
-          className="border rounded w-full px-2 py-1 mb-1"
+          className="border rounded w-full px-2 py-1 mb-1 bg-white text-black"
           value={letter.sender.email || ""}
           placeholder="Your Email"
           onChange={(e) =>
@@ -155,7 +156,7 @@ export default function CoverLetter() {
           }
         />
         <input
-          className="border rounded w-full px-2 py-1 mb-1"
+          className="border rounded w-full px-2 py-1 mb-1 bg-white text-black"
           value={letter.sender.phone || ""}
           placeholder="Your Phone"
           onChange={(e) =>
@@ -166,7 +167,7 @@ export default function CoverLetter() {
           }
         />
         <input
-          className="border rounded w-full px-2 py-1"
+          className="border rounded w-full px-2 py-1 bg-white text-black"
           value={letter.sender.location || ""}
           placeholder="Your Location"
           onChange={(e) =>
@@ -182,7 +183,7 @@ export default function CoverLetter() {
       <div className="mb-4">
         <h2 className="font-semibold mb-2">Recipient</h2>
         <input
-          className="border rounded w-full px-2 py-1 mb-1"
+          className="border rounded w-full px-2 py-1 mb-1 bg-white text-black"
           value={letter.recipient.name || ""}
           placeholder="Recipient Name"
           onChange={(e) =>
@@ -193,7 +194,7 @@ export default function CoverLetter() {
           }
         />
         <input
-          className="border rounded w-full px-2 py-1 mb-1"
+          className="border rounded w-full px-2 py-1 mb-1 bg-white text-black"
           value={letter.recipient.company || ""}
           placeholder="Company"
           onChange={(e) =>
@@ -204,7 +205,7 @@ export default function CoverLetter() {
           }
         />
         <input
-          className="border rounded w-full px-2 py-1"
+          className="border rounded w-full px-2 py-1 bg-white text-black"
           value={letter.recipient.address || ""}
           placeholder="Address"
           onChange={(e) =>
@@ -221,7 +222,7 @@ export default function CoverLetter() {
         <h2 className="font-semibold mb-2">Date</h2>
         <input
           type="date"
-          className="border rounded w-full px-2 py-1"
+          className="border rounded w-full px-2 py-1 bg-white text-black"
           value={letter.date || ""}
           onChange={(e) => setLetter({ ...letter, date: e.target.value })}
         />
@@ -231,7 +232,7 @@ export default function CoverLetter() {
       <div className="mb-4">
         <h2 className="font-semibold mb-2">Body</h2>
         <textarea
-          className="border rounded w-full px-2 py-2"
+          className="border rounded w-full px-2 py-2 bg-white text-black"
           rows={8}
           value={letter.body || ""}
           onChange={(e) => setLetter({ ...letter, body: e.target.value })}
@@ -242,7 +243,7 @@ export default function CoverLetter() {
       <div className="mb-4">
         <h2 className="font-semibold mb-2">Closing</h2>
         <input
-          className="border rounded w-full px-2 py-1"
+          className="border rounded w-full px-2 py-1 bg-white text-black"
           value={letter.closing || ""}
           onChange={(e) => setLetter({ ...letter, closing: e.target.value })}
         />
@@ -252,14 +253,14 @@ export default function CoverLetter() {
       <div className="mb-6">
         <h2 className="font-semibold mb-2">Signature</h2>
         <input
-          className="border rounded w-full px-2 py-1"
+          className="border rounded w-full px-2 py-1 bg-white text-black"
           value={letter.signature || ""}
           onChange={(e) => setLetter({ ...letter, signature: e.target.value })}
         />
       </div>
 
       {/* Preview */}
-      <div className="border rounded p-4 bg-gray-50">
+      <div className="border rounded p-4 bg-gray-700">
         <h2 className="font-semibold mb-2">Preview</h2>
         <p>{letter.sender.name}</p>
         <p>

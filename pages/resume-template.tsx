@@ -220,7 +220,7 @@ export default function ResumeTemplate() {
           <textarea
             value={safe(section.content)}
             onChange={(e) => updatedSection({ content: e.target.value })}
-            className="w-full border rounded p-2 mb-2"
+            className="w-full border rounded p-2 mb-2 bg-white text-black"
             rows={4}
           />
         )}
@@ -233,7 +233,7 @@ export default function ResumeTemplate() {
                 <input
                   value={safe(s)}
                   onChange={(e) => updateItem(i, e.target.value)}
-                  className="border rounded px-2 py-1 w-full"
+                  className="border rounded px-2 py-1 w-full bg-white text-black"
                 />
                 <button
                   onClick={() => removeItem(i)}
@@ -278,7 +278,7 @@ export default function ResumeTemplate() {
                           })
                         }
                         placeholder="Role / Title"
-                        className="w-full mb-2 border rounded px-2 py-1"
+                        className="w-full mb-2 border rounded px-2 py-1 text-gray-500"
                       />
                       <input
                         value={safe(item.company)}
@@ -289,7 +289,7 @@ export default function ResumeTemplate() {
                           })
                         }
                         placeholder="Company"
-                        className="w-full mb-2 border rounded px-2 py-1"
+                        className="w-full mb-2 border rounded px-2 py-1 text-gray-500"
                       />
                       <div className="flex flex-col sm:flex-row gap-2">
                         <input
@@ -301,7 +301,7 @@ export default function ResumeTemplate() {
                             })
                           }
                           placeholder="Period"
-                          className="flex-1 mb-2 border rounded px-2 py-1"
+                          className="flex-1 mb-2 border rounded px-2 py-1 text-gray-500"
                         />
                         <input
                           value={safe(item.location)}
@@ -312,7 +312,7 @@ export default function ResumeTemplate() {
                             })
                           }
                           placeholder="Location"
-                          className="flex-1 mb-2 border rounded px-2 py-1"
+                          className="flex-1 mb-2 border rounded px-2 py-1 text-gray-500"
                         />
                       </div>
                       <textarea
@@ -324,7 +324,7 @@ export default function ResumeTemplate() {
                           })
                         }
                         placeholder="Achievements"
-                        className="w-full border rounded px-2 py-1"
+                        className="w-full border rounded px-2 py-1 text-gray-500"
                         rows={3}
                       />
                     </>
@@ -348,7 +348,7 @@ export default function ResumeTemplate() {
                         )
                       }
                       placeholder="Item text"
-                      className="w-full mb-2 border rounded px-2 py-1"
+                      className="w-full mb-2 border rounded px-2 py-1 text-gray-500"
                     />
                   )}
 
@@ -358,7 +358,7 @@ export default function ResumeTemplate() {
                       value={safe(item)}
                       onChange={(e) => updateItem(i, e.target.value)}
                       placeholder="Entry"
-                      className="w-full mb-2 border rounded px-2 py-1"
+                      className="w-full mb-2 border rounded px-2 py-1 text-gray-500"
                     />
                   )}
 
@@ -441,11 +441,13 @@ export default function ResumeTemplate() {
       return (
         <div className="flex flex-col md:flex-row border rounded overflow-hidden">
           <aside
-            className="md:w-1/3 w-full p-4 md:p-6"
+            className="md:w-1/3 w-full p-4 md:p-6 text-gray-500"
             style={{ background: t.light }}
           >
-            <h1 className="text-xl md:text-2xl font-bold mb-1">{safe(name)}</h1>
-            <p className="text-sm mb-4">{safe(title)}</p>
+            <h1 className="text-xl md:text-2xl font-bold mb-1 text-gray-500">
+              {safe(name)}
+            </h1>
+            <p className="text-sm mb-4 text-gray-500">{safe(title)}</p>
             <h3 style={{ color: t.primary }} className="font-semibold mb-2">
               Contact
             </h3>
@@ -513,7 +515,7 @@ export default function ResumeTemplate() {
           <select
             value={template}
             onChange={(e) => setTemplate(e.target.value)}
-            className="border rounded px-2 py-1"
+            className="border rounded px-2 py-1 text-gray-500"
           >
             <option value="classic">Classic</option>
             <option value="modern">Modern</option>
@@ -523,7 +525,7 @@ export default function ResumeTemplate() {
             <select
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
-              className="border rounded px-2 py-1"
+              className="border rounded px-2 py-1 text-gray-500"
             >
               <option value="blue">Blue</option>
               <option value="green">Green</option>
@@ -535,7 +537,7 @@ export default function ResumeTemplate() {
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
             placeholder="AI context (e.g. Resume for software engineer with 5 years experience)"
-            className="border rounded px-2 py-1 w-full sm:w-64 text-sm"
+            className="border rounded px-2 py-1 w-full text-black sm:w-64 text-sm"
             rows={2}
           />
           <button
@@ -569,7 +571,7 @@ export default function ResumeTemplate() {
       {!isPreview ? (
         <>
           {/* Editable Header */}
-          <div className="mb-6 border p-4 rounded bg-white">
+          <div className="mb-6 border p-4 rounded bg-white text-black">
             <input
               value={safe(name)}
               onChange={(e) => setName(e.target.value)}
@@ -578,7 +580,7 @@ export default function ResumeTemplate() {
             <input
               value={safe(title)}
               onChange={(e) => setTitle(e.target.value)}
-              className="text-gray-600 w-full mb-2 border rounded px-2 py-1"
+              className="text-black w-full mb-2 border rounded px-2 py-1"
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <input
@@ -587,7 +589,7 @@ export default function ResumeTemplate() {
                   setContact({ ...contact, email: e.target.value })
                 }
                 placeholder="Email"
-                className="border rounded px-2 py-1 w-full"
+                className="border rounded px-2 py-1 w-full bg-white text-black"
               />
               <input
                 value={safe(contact.phone)}
@@ -595,7 +597,7 @@ export default function ResumeTemplate() {
                   setContact({ ...contact, phone: e.target.value })
                 }
                 placeholder="Phone"
-                className="border rounded px-2 py-1 w-full"
+                className="border rounded px-2 py-1 w-full bg-white text-black"
               />
               <input
                 value={safe(contact.location)}
@@ -603,7 +605,7 @@ export default function ResumeTemplate() {
                   setContact({ ...contact, location: e.target.value })
                 }
                 placeholder="Location"
-                className="border rounded px-2 py-1 w-full"
+                className="border rounded px-2 py-1 w-full bg-white text-black"
               />
               <input
                 value={safe(contact.linkedin)}
@@ -611,7 +613,7 @@ export default function ResumeTemplate() {
                   setContact({ ...contact, linkedin: e.target.value })
                 }
                 placeholder="LinkedIn"
-                className="border rounded px-2 py-1 w-full"
+                className="border rounded px-2 py-1 w-full bg-white text-black"
               />
               <input
                 value={safe(contact.portfolio)}
@@ -619,7 +621,7 @@ export default function ResumeTemplate() {
                   setContact({ ...contact, portfolio: e.target.value })
                 }
                 placeholder="Portfolio"
-                className="border rounded px-2 py-1 w-full sm:col-span-2"
+                className="border rounded px-2 py-1 w-full bg-white text-black sm:col-span-2"
               />
             </div>
           </div>

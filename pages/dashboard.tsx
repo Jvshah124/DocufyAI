@@ -218,22 +218,22 @@ export default function Dashboard() {
           <FaPlus /> New Document
         </button>
         {openMenu && (
-          <div className="absolute mt-2 w-full bg-white dark:bg-gray-800 border rounded-md shadow-lg z-10">
+          <div className="absolute mt-2 w-full bg-black dark:bg-gray-800 border rounded-md shadow-lg z-10">
             <Link
               href="/resume-template"
-              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="block px-4 py-2 border border-white/20 hover:bg-gray-700 dark:hover:bg-gray-700"
             >
               Resume
             </Link>
             <Link
               href="/invoice-template"
-              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="block px-4 py-2 border border-white/20 hover:bg-gray-700 dark:hover:bg-gray-700"
             >
               Invoice
             </Link>
             <Link
               href="/cover-letter"
-              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="block px-4 py-2 border border-white/20 hover:bg-gray-700 dark:hover:bg-gray-700"
             >
               Cover Letter
             </Link>
@@ -271,8 +271,10 @@ export default function Dashboard() {
         <div className="flex items-center gap-3">
           <FaUserCircle className="text-3xl text-gray-500" />
           <div>
-            <div className="text-sm font-medium">{user?.email || "—"}</div>
-            <div className="text-xs text-gray-500">
+            <div className="text-sm font-medium text-gray-800">
+              {user?.email || "—"}
+            </div>
+            <div className="text-xs text-gray-800">
               {profile ? (
                 <>
                   {profile.subscription_status || "free"} •{" "}
@@ -343,7 +345,7 @@ export default function Dashboard() {
         </div>
 
         {/* AI Input Box */}
-        <div className="mb-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <div className="mb-6 bg-white dark:bg-gray-800 text-gray-800 p-6 rounded-lg shadow">
           <textarea
             placeholder="Ask anything... (e.g. 'create a resume for a software engineer')"
             rows={3}
@@ -388,7 +390,9 @@ export default function Dashboard() {
 
         {/* Testimonials */}
         <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-2">What our users say</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gray-800">
+            What our users say
+          </h3>
           <p className="text-gray-600 dark:text-gray-400">
             ⭐⭐⭐⭐⭐ “This tool saved me hours! The AI-generated resume landed
             me interviews immediately.”
@@ -411,7 +415,7 @@ function Card({
   return (
     <div className="p-5 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition">
       <div className="mb-3">{icon}</div>
-      <h4 className="font-semibold mb-1">{title}</h4>
+      <h4 className="font-semibold mb-1 text-gray-800">{title}</h4>
       <p className="text-sm text-gray-500 dark:text-gray-400">{desc}</p>
     </div>
   );

@@ -66,7 +66,7 @@ export default function CoverLetter() {
     }
   };
 
-  // 🟢 Download PDF (with free + pro limits)
+  // 🟢 Download PDF (with free + pro limits + mobile fix)
   const downloadPDF = async () => {
     if (!user) {
       alert("Please log in first.");
@@ -94,10 +94,23 @@ export default function CoverLetter() {
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "cover-letter.pdf";
-      a.click();
+
+      // 🔍 Detect if on mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // On mobile → open in new tab so user can save/share
+        window.open(url, "_blank");
+      } else {
+        // On desktop → trigger download directly
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "cover-letter.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);

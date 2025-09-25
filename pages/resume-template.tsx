@@ -1,8 +1,8 @@
 // pages/resume-template.tsx
+import { getUserProfile, canDownloadAndIncrement } from "../lib/profile";
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { supabase } from "../lib/supabaseClient";
-import { getUserProfile, incrementDocs } from "../lib/profile"; // ✅ added
 
 // helper to avoid "undefined" text
 const safe = (val: any) => (val === undefined || val === null ? "" : val);
@@ -95,16 +95,10 @@ export default function ResumeTemplate() {
       return;
     }
 
-    // ✅ Check usage for both free and pro users
-    if (profile.docs_generated >= profile.docs_limit) {
-      alert("You've reached your download limit.");
-      return;
-    }
-
-    // ✅ Increment doc count
-    const ok = await incrementDocs(profile.id);
+    // Use new helper
+    const ok = await canDownloadAndIncrement(profile.id);
     if (!ok) {
-      alert("Could not update usage — limit may have been reached.");
+      alert("❌ You’ve reached your download limit.");
       return;
     }
 

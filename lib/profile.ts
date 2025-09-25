@@ -66,27 +66,45 @@ export async function ensureUserProfile(
 }
 
 /**
- * Increment docs_generated for the user if under the limit.
- * Returns true if incremented, false if limit reached.
+ * Check if user can download + increment docs_generated if allowed.
+ * Returns true if allowed, false if limit reached.
  */
-export async function incrementDocs(userId: string): Promise<boolean> {
-  // Fetch current profile
-  const profile = await getUserProfile(userId);
-  if (!profile) return false;
+export async function canDownloadAndIncrement(
+  userId: string
+): Promise<boolean> {
+  if (!userId) return false;
 
-  const current = profile.docs_generated || 0;
-  const limit = profile.docs_limit ?? 0;
+  // Get the profile first
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("subscription_status, role, docs_generated, docs_limit")
+    .eq("id", userId)
+    .single();
 
-  if (current >= limit) {
-    return false; // 🚫 already at limit
-  }
-
-  // ✅ Only increment if under limit
-  const { error } = await supabase.rpc("increment_docs", { user_id: userId });
-  if (error) {
-    console.error("incrementDocs error:", error.message || error);
+  if (error || !profile) {
+    console.error("canDownloadAndIncrement error:", error?.message);
     return false;
   }
 
-  return true;
+  // 🟢 Allow unlimited for admin or pro
+  if (profile.role === "admin" || profile.subscription_status === "pro") {
+    return true;
+  }
+
+  // Check free user limit
+  if (profile.docs_generated >= profile.docs_limit) {
+    return false; // ❌ limit reached
+  }
+
+  // Increment using the RPC
+  const { error: updateError } = await supabase.rpc("increment_docs", {
+    user_id: userId,
+  });
+
+  if (updateError) {
+    console.error("Failed to increment docs:", updateError.message);
+    return false;
+  }
+
+  return true; // ✅ success
 }

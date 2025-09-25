@@ -1,4 +1,5 @@
 // pages/cover-letter.tsx
+import { canDownloadAndIncrement } from "../lib/profile";
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useRouter } from "next/router";
@@ -65,43 +66,20 @@ export default function CoverLetter() {
     }
   };
 
-  // 🟢 Download PDF (with free limit support)
+  // 🟢 Download PDF (with free + pro limits)
   const downloadPDF = async () => {
     if (!user) {
       alert("Please log in first.");
       return;
     }
 
-    // Fetch full profile so we know docs_generated & docs_limit
-    const { data: profile, error } = await supabase
-      .from("profiles")
-      .select("subscription_status, docs_generated, docs_limit")
-      .eq("id", user.id)
-      .single();
-
-    if (error || !profile) {
-      alert("Could not load your profile. Try again.");
+    // Use the new helper
+    const allowed = await canDownloadAndIncrement(user.id);
+    if (!allowed) {
+      alert("You’ve reached your download limit. Please upgrade your plan.");
       return;
     }
 
-    // ✅ Check limit for both free & pro users
-    if (profile.docs_generated >= profile.docs_limit) {
-      alert("You've reached your download limit.");
-      return;
-    }
-
-    // Increment docs_generated count
-    const { error: updateError } = await supabase.rpc("increment_docs", {
-      user_id: user.id,
-    });
-
-    if (updateError) {
-      console.error("increment_docs error:", updateError.message);
-      alert("Could not update your usage. Try again.");
-      return;
-    }
-
-    // ✅ Continue with PDF generation
     try {
       const response = await fetch("/api/export-pdf", {
         method: "POST",

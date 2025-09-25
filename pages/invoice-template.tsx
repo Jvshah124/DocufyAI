@@ -197,10 +197,10 @@ export default function InvoiceTemplate() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="max-w-4xl mx-auto p-4 md:p-6">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-3">
         <h1 className="text-2xl font-bold">Invoice Builder</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap gap-2">
           <select
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
@@ -215,7 +215,7 @@ export default function InvoiceTemplate() {
           <button
             onClick={generateWithAI}
             disabled={isGenerating}
-            className={`px-4 py-2 rounded text-white ${
+            className={`px-4 py-2 rounded text-white text-sm ${
               isGenerating ? "bg-green-300 cursor-not-allowed" : "bg-green-600"
             }`}
           >
@@ -225,7 +225,7 @@ export default function InvoiceTemplate() {
           <button
             onClick={downloadPDF}
             disabled={isDownloading}
-            className={`px-4 py-2 rounded text-white ${
+            className={`px-4 py-2 rounded text-white text-sm ${
               isDownloading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600"
             }`}
           >
@@ -234,8 +234,9 @@ export default function InvoiceTemplate() {
         </div>
       </div>
 
-      <div className="mb-6 border rounded p-4 bg-black">
-        <div className="grid grid-cols-2 gap-4">
+      {/* Form Section */}
+      <div className="mb-6 border rounded p-4 bg-gray-900 text-white">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold">Invoice #</label>
             <input
@@ -243,7 +244,7 @@ export default function InvoiceTemplate() {
               onChange={(e) =>
                 updateInvoice({ invoice_number: e.target.value })
               }
-              className="w-full border rounded px-2 py-1"
+              className="w-full border rounded px-2 py-1 bg-white text-black"
             />
           </div>
           <div>
@@ -252,7 +253,7 @@ export default function InvoiceTemplate() {
               type="date"
               value={safe(invoice.date)}
               onChange={(e) => updateInvoice({ date: e.target.value })}
-              className="w-full border rounded px-2 py-1"
+              className="w-full border rounded px-2 py-1 bg-white text-black"
             />
           </div>
 
@@ -262,7 +263,7 @@ export default function InvoiceTemplate() {
               type="date"
               value={safe(invoice.due_date)}
               onChange={(e) => updateInvoice({ due_date: e.target.value })}
-              className="w-full border rounded px-2 py-1"
+              className="w-full border rounded px-2 py-1 bg-white text-black"
             />
           </div>
 
@@ -271,103 +272,59 @@ export default function InvoiceTemplate() {
             <input
               value={safe(invoice.notes)}
               onChange={(e) => updateInvoice({ notes: e.target.value })}
-              className="w-full border rounded px-2 py-1"
+              className="w-full border rounded px-2 py-1 bg-white text-black"
             />
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* From */}
           <div>
             <h3 className="font-semibold">From</h3>
-            <input
-              value={safe(invoice.from.company)}
-              onChange={(e) =>
-                updateInvoice({
-                  from: { ...invoice.from, company: e.target.value },
-                })
-              }
-              className="w-full border rounded px-2 py-1 mt-1"
-              placeholder="Company"
-            />
-            <input
-              value={safe(invoice.from.address)}
-              onChange={(e) =>
-                updateInvoice({
-                  from: { ...invoice.from, address: e.target.value },
-                })
-              }
-              className="w-full border rounded px-2 py-1 mt-1"
-              placeholder="Address"
-            />
-            <input
-              value={safe(invoice.from.email)}
-              onChange={(e) =>
-                updateInvoice({
-                  from: { ...invoice.from, email: e.target.value },
-                })
-              }
-              className="w-full border rounded px-2 py-1 mt-1"
-              placeholder="Email"
-            />
-            <input
-              value={safe(invoice.from.phone)}
-              onChange={(e) =>
-                updateInvoice({
-                  from: { ...invoice.from, phone: e.target.value },
-                })
-              }
-              className="w-full border rounded px-2 py-1 mt-1"
-              placeholder="Phone"
-            />
+            {["company", "address", "email", "phone"].map((f) => (
+              <input
+                key={f}
+                value={safe(invoice.from[f])}
+                onChange={(e) =>
+                  updateInvoice({
+                    from: { ...invoice.from, [f]: e.target.value },
+                  })
+                }
+                className="w-full border rounded px-2 py-1 mt-1 bg-white text-black"
+                placeholder={f.charAt(0).toUpperCase() + f.slice(1)}
+              />
+            ))}
           </div>
 
+          {/* Bill To */}
           <div>
             <h3 className="font-semibold">Bill To</h3>
-            <input
-              value={safe(invoice.to.name)}
-              onChange={(e) =>
-                updateInvoice({ to: { ...invoice.to, name: e.target.value } })
-              }
-              className="w-full border rounded px-2 py-1 mt-1"
-              placeholder="Name / Company"
-            />
-            <input
-              value={safe(invoice.to.address)}
-              onChange={(e) =>
-                updateInvoice({
-                  to: { ...invoice.to, address: e.target.value },
-                })
-              }
-              className="w-full border rounded px-2 py-1 mt-1"
-              placeholder="Address"
-            />
-            <input
-              value={safe(invoice.to.email)}
-              onChange={(e) =>
-                updateInvoice({ to: { ...invoice.to, email: e.target.value } })
-              }
-              className="w-full border rounded px-2 py-1 mt-1"
-              placeholder="Email"
-            />
-            <input
-              value={safe(invoice.to.phone)}
-              onChange={(e) =>
-                updateInvoice({ to: { ...invoice.to, phone: e.target.value } })
-              }
-              className="w-full border rounded px-2 py-1 mt-1"
-              placeholder="Phone"
-            />
+            {["name", "address", "email", "phone"].map((f) => (
+              <input
+                key={f}
+                value={safe(invoice.to[f])}
+                onChange={(e) =>
+                  updateInvoice({ to: { ...invoice.to, [f]: e.target.value } })
+                }
+                className="w-full border rounded px-2 py-1 mt-1 bg-white text-black"
+                placeholder={f.charAt(0).toUpperCase() + f.slice(1)}
+              />
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="mb-6 bg-black p-4 rounded border">
+      {/* Items */}
+      <div className="mb-6 bg-gray-900 text-white p-4 rounded border">
         <h3 className="font-semibold mb-2">Items</h3>
         <div className="space-y-3">
           {(invoice.items || []).map((it: any) => (
-            <div key={it.id} className="grid grid-cols-6 gap-2 items-center">
+            <div
+              key={it.id}
+              className="grid grid-cols-1 sm:grid-cols-6 gap-2 items-center"
+            >
               <input
-                className="col-span-3 border rounded px-2 py-1"
+                className="sm:col-span-3 border rounded px-2 py-1 bg-white text-black"
                 value={safe(it.description)}
                 onChange={(e) =>
                   updateItem(it.id, { description: e.target.value })
@@ -375,7 +332,7 @@ export default function InvoiceTemplate() {
               />
               <input
                 type="number"
-                className="col-span-1 border rounded px-2 py-1"
+                className="sm:col-span-1 border rounded px-2 py-1 bg-white text-black"
                 value={it.quantity}
                 onChange={(e) =>
                   updateItem(it.id, { quantity: Number(e.target.value) })
@@ -383,18 +340,18 @@ export default function InvoiceTemplate() {
               />
               <input
                 type="number"
-                className="col-span-1 border rounded px-2 py-1"
+                className="sm:col-span-1 border rounded px-2 py-1 bg-white text-black"
                 value={it.unit_price}
                 onChange={(e) =>
                   updateItem(it.id, { unit_price: Number(e.target.value) })
                 }
               />
-              <div className="col-span-1 text-right">
+              <div className="sm:col-span-1 text-right">
                 <div className="text-sm">
                   {(Number(it.total) || 0).toFixed(2)}
                 </div>
                 <button
-                  className="text-red-500 text-xs mt-1"
+                  className="text-red-400 text-xs mt-1"
                   onClick={() => removeItem(it.id)}
                 >
                   Remove
@@ -407,44 +364,39 @@ export default function InvoiceTemplate() {
         <div className="mt-3">
           <button
             onClick={addItem}
-            className="px-3 py-1 text-sm bg-gray-500 rounded"
+            className="px-3 py-1 text-sm bg-gray-600 rounded"
           >
             + Add Item
           </button>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        {/* Totals */}
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div />
-          <div className="bg-gray-500 p-3 rounded">
+          <div className="bg-gray-700 p-3 rounded">
             <div className="flex justify-between">
               <div>Subtotal</div>
               <div>{(Number(invoice.sub_total) || 0).toFixed(2)}</div>
             </div>
             <div className="flex justify-between mt-1">
               <div>Tax</div>
-              <div>
-                <input
-                  type="number"
-                  value={invoice.tax}
-                  onChange={(e) =>
-                    updateInvoice({ tax: Number(e.target.value) })
-                  }
-                  className="w-28 border rounded px-2 py-1"
-                />
-              </div>
+              <input
+                type="number"
+                value={invoice.tax}
+                onChange={(e) => updateInvoice({ tax: Number(e.target.value) })}
+                className="w-28 border rounded px-2 py-1 bg-white text-black"
+              />
             </div>
             <div className="flex justify-between mt-1">
               <div>Discount</div>
-              <div>
-                <input
-                  type="number"
-                  value={invoice.discount}
-                  onChange={(e) =>
-                    updateInvoice({ discount: Number(e.target.value) })
-                  }
-                  className="w-28 border rounded px-2 py-1"
-                />
-              </div>
+              <input
+                type="number"
+                value={invoice.discount}
+                onChange={(e) =>
+                  updateInvoice({ discount: Number(e.target.value) })
+                }
+                className="w-28 border rounded px-2 py-1 bg-white text-black"
+              />
             </div>
             <div className="flex justify-between mt-2 font-bold">
               <div>Total</div>
@@ -454,12 +406,13 @@ export default function InvoiceTemplate() {
         </div>
       </div>
 
+      {/* Preview */}
       <div className="mb-8">
         <h3 className="font-semibold">Preview</h3>
-        <div className="border rounded p-4 bg-black">
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div className="border rounded p-4 bg-gray-900 text-white">
+          <div className="flex flex-col sm:flex-row justify-between">
             <div>
-              <h2 className="text-xl font-bold" style={{ color: "#111" }}>
+              <h2 className="text-xl font-bold">
                 {safe(invoice.from.company)}
               </h2>
               <div>{safe(invoice.from.address)}</div>
@@ -468,8 +421,8 @@ export default function InvoiceTemplate() {
                 {invoice.from.phone ? ` • ${invoice.from.phone}` : ""}
               </div>
             </div>
-            <div style={{ textAlign: "right" }}>
-              <h3 style={{ color: "#eee" }}>
+            <div className="text-right">
+              <h3 className="text-lg font-semibold">
                 Invoice #{safe(invoice.invoice_number)}
               </h3>
               <div>Date: {safe(invoice.date)}</div>
@@ -477,7 +430,7 @@ export default function InvoiceTemplate() {
             </div>
           </div>
 
-          <div style={{ marginTop: 16 }}>
+          <div className="mt-4">
             <strong>Bill To:</strong>
             <div>{safe(invoice.to.name)}</div>
             <div>{safe(invoice.to.address)}</div>
@@ -487,48 +440,24 @@ export default function InvoiceTemplate() {
             </div>
           </div>
 
-          <table
-            style={{ width: "100%", borderCollapse: "collapse", marginTop: 12 }}
-          >
+          <table className="w-full border-collapse mt-4 text-sm">
             <thead>
-              <tr style={{ background: "#f7f7" }}>
-                <th style={{ textAlign: "left", padding: 8 }}>Description</th>
-                <th style={{ textAlign: "center", padding: 8 }}>Qty</th>
-                <th style={{ textAlign: "right", padding: 8 }}>Unit</th>
-                <th style={{ textAlign: "right", padding: 8 }}>Total</th>
+              <tr className="bg-gray-800">
+                <th className="text-left p-2">Description</th>
+                <th className="text-center p-2">Qty</th>
+                <th className="text-right p-2">Unit</th>
+                <th className="text-right p-2">Total</th>
               </tr>
             </thead>
             <tbody>
               {(invoice.items || []).map((it: any) => (
-                <tr key={it.id}>
-                  <td style={{ padding: 8, borderBottom: "1px solid #eee" }}>
-                    {safe(it.description)}
-                  </td>
-                  <td
-                    style={{
-                      padding: 8,
-                      textAlign: "center",
-                      borderBottom: "1px solid #eee",
-                    }}
-                  >
-                    {safe(it.quantity)}
-                  </td>
-                  <td
-                    style={{
-                      padding: 8,
-                      textAlign: "right",
-                      borderBottom: "1px solid #eee",
-                    }}
-                  >
+                <tr key={it.id} className="border-b border-gray-700">
+                  <td className="p-2">{safe(it.description)}</td>
+                  <td className="p-2 text-center">{safe(it.quantity)}</td>
+                  <td className="p-2 text-right">
                     {Number(it.unit_price || 0).toFixed(2)}
                   </td>
-                  <td
-                    style={{
-                      padding: 8,
-                      textAlign: "right",
-                      borderBottom: "1px solid #eee",
-                    }}
-                  >
+                  <td className="p-2 text-right">
                     {Number(it.total || 0).toFixed(2)}
                   </td>
                 </tr>
@@ -536,43 +465,28 @@ export default function InvoiceTemplate() {
             </tbody>
           </table>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginTop: 12,
-            }}
-          >
-            <div style={{ width: 240 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div className="flex justify-end mt-4">
+            <div className="w-60 space-y-1">
+              <div className="flex justify-between">
                 <div>Subtotal</div>
                 <div>{(Number(invoice.sub_total) || 0).toFixed(2)}</div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div className="flex justify-between">
                 <div>Tax</div>
                 <div>{(Number(invoice.tax) || 0).toFixed(2)}</div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div className="flex justify-between">
                 <div>Discount</div>
                 <div>{(Number(invoice.discount) || 0).toFixed(2)}</div>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontWeight: "bold",
-                  marginTop: 6,
-                }}
-              >
+              <div className="flex justify-between font-bold pt-2">
                 <div>Total</div>
                 <div>{(Number(invoice.total) || 0).toFixed(2)}</div>
               </div>
             </div>
           </div>
 
-          <div style={{ marginTop: 12, color: "#eee" }}>
-            {safe(invoice.notes)}
-          </div>
+          <div className="mt-4">{safe(invoice.notes)}</div>
         </div>
       </div>
     </div>

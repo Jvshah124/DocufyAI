@@ -204,7 +204,7 @@ export default function InvoiceTemplate() {
           <select
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
-            className="border rounded px-2 py-1"
+            className="border rounded px-2 py-1 text-gray-500"
           >
             <option value="blue">Blue</option>
             <option value="green">Green</option>

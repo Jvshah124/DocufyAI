@@ -11,17 +11,21 @@ export default async function handler(
   }
 
   try {
+    const { email, userId } = req.body; // 🟢 frontend should send these
+
     const razorpay = new Razorpay({
       key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID as string,
       key_secret: process.env.RAZORPAY_KEY_SECRET as string,
     });
 
     const options = {
-      amount: 699 * 100, // $6.99 → amount is in paise (smallest unit)
+      amount: 699 * 100, // ₹6.99 → amount is in paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       notes: {
         plan: "Pro Plan",
+        email: email || "unknown", // 🟢 attach email here
+        userId: userId || "unknown", // 🟢 attach userId (optional)
       },
     };
 

@@ -22,8 +22,6 @@ export async function getUserProfile(userId: string): Promise<Profile | null> {
     .single();
 
   if (error) {
-    // If no row found supabase returns an error — swallow and return null.
-    // You can refine this logic if you want to throw for other error types.
     console.warn("getUserProfile warning:", error.message || error);
     return null;
   }
@@ -44,14 +42,13 @@ export async function ensureUserProfile(
   const existing = await getUserProfile(userId);
   if (existing) return existing;
 
-  // Insert a default profile (adjust fields to match your DB)
+  // Insert a default profile
   const defaultProfile = {
     id: userId,
     subscription_status: "free",
     docs_generated: 0,
-    docs_limit: 1, // free users: 1 preview/generation allowed initially (we'll adjust later)
+    docs_limit: 1, // free users: 1 download allowed
     subscription_current_period_end: null,
-    // you can add email or other defaults if your table requires them
     ...(opts?.email ? { email: opts.email } : {}),
   };
 
@@ -65,7 +62,6 @@ export async function ensureUserProfile(
     console.error("ensureUserProfile failed:", error.message || error);
     return null;
   }
-
   return data as Profile;
 }
 
@@ -74,22 +70,23 @@ export async function ensureUserProfile(
  * Returns true if incremented, false if limit reached.
  */
 export async function incrementDocs(userId: string): Promise<boolean> {
-  const { error } = await supabase.rpc("increment_docs", { user_id: userId });
+  // Fetch current profile
+  const profile = await getUserProfile(userId);
+  if (!profile) return false;
 
+  const current = profile.docs_generated || 0;
+  const limit = profile.docs_limit ?? 0;
+
+  if (current >= limit) {
+    return false; // 🚫 already at limit
+  }
+
+  // ✅ Only increment if under limit
+  const { error } = await supabase.rpc("increment_docs", { user_id: userId });
   if (error) {
     console.error("incrementDocs error:", error.message || error);
     return false;
   }
 
-  // Re-fetch profile to get updated docs_generated
-  const updated = await getUserProfile(userId);
-  if (updated) {
-    if (
-      updated.docs_limit !== null &&
-      updated.docs_generated! >= updated.docs_limit!
-    ) {
-      return false; // limit hit
-    }
-  }
   return true;
 }

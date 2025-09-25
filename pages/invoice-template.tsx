@@ -163,12 +163,43 @@ export default function InvoiceTemplate() {
     }
   };
 
-  // Download PDF (Pro-only)
+  // 🟢 Download PDF (with free limit support)
   const downloadPDF = async () => {
-    if (!isPro) {
-      alert("Downloads are Pro-only. Please upgrade your plan.");
+    if (!user) {
+      alert("Please log in first.");
       return;
     }
+
+    // Fetch full profile
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("subscription_status, docs_generated, docs_limit")
+      .eq("id", user.id)
+      .single();
+
+    if (error || !profile) {
+      alert("Could not load your profile. Try again.");
+      return;
+    }
+
+    // ✅ Check limit for both free & pro
+    if (profile.docs_generated >= profile.docs_limit) {
+      alert("You've reached your download limit.");
+      return;
+    }
+
+    // Increment docs_generated count
+    const { error: updateError } = await supabase.rpc("increment_docs", {
+      user_id: user.id,
+    });
+
+    if (updateError) {
+      console.error("increment_docs error:", updateError.message);
+      alert("Could not update your usage. Try again.");
+      return;
+    }
+
+    // ✅ Continue with PDF generation
     try {
       setIsDownloading(true);
       const res = await fetch("/api/export-pdf", {
@@ -180,7 +211,9 @@ export default function InvoiceTemplate() {
           data: invoice,
         }),
       });
+
       if (!res.ok) throw new Error("PDF generation failed");
+
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");

@@ -101,7 +101,7 @@ export default function ResumeTemplate() {
     }
 
     if (profile.docs_generated >= profile.docs_limit) {
-      alert("You’ve reached your download limit.");
+      alert("You've reached your download limit.");
       return;
     }
 
@@ -208,7 +208,7 @@ export default function ResumeTemplate() {
           />
           <button
             onClick={() => removeSection(idx)}
-            className="text-red-500 ml-2"
+            className="text-red-500 ml-2 flex-shrink-0"
             title="Remove section"
           >
             ✕
@@ -237,7 +237,7 @@ export default function ResumeTemplate() {
                 />
                 <button
                   onClick={() => removeItem(i)}
-                  className="text-red-500 ml-2"
+                  className="text-red-500 ml-2 flex-shrink-0"
                 >
                   ✕
                 </button>
@@ -291,7 +291,7 @@ export default function ResumeTemplate() {
                         placeholder="Company"
                         className="w-full mb-2 border rounded px-2 py-1"
                       />
-                      <div className="flex gap-2">
+                      <div className="flex flex-col sm:flex-row gap-2">
                         <input
                           value={safe(item.period)}
                           onChange={(e) =>
@@ -301,7 +301,7 @@ export default function ResumeTemplate() {
                             })
                           }
                           placeholder="Period"
-                          className="w-1/2 mb-2 border rounded px-2 py-1"
+                          className="flex-1 mb-2 border rounded px-2 py-1"
                         />
                         <input
                           value={safe(item.location)}
@@ -312,7 +312,7 @@ export default function ResumeTemplate() {
                             })
                           }
                           placeholder="Location"
-                          className="w-1/2 mb-2 border rounded px-2 py-1"
+                          className="flex-1 mb-2 border rounded px-2 py-1"
                         />
                       </div>
                       <textarea
@@ -439,9 +439,12 @@ export default function ResumeTemplate() {
     const t = themes[theme];
     if (template === "classic") {
       return (
-        <div className="flex border rounded overflow-hidden">
-          <aside className="w-1/3 p-6" style={{ background: t.light }}>
-            <h1 className="text-2xl font-bold mb-1">{safe(name)}</h1>
+        <div className="flex flex-col md:flex-row border rounded overflow-hidden">
+          <aside
+            className="md:w-1/3 w-full p-4 md:p-6"
+            style={{ background: t.light }}
+          >
+            <h1 className="text-xl md:text-2xl font-bold mb-1">{safe(name)}</h1>
             <p className="text-sm mb-4">{safe(title)}</p>
             <h3 style={{ color: t.primary }} className="font-semibold mb-2">
               Contact
@@ -452,7 +455,7 @@ export default function ResumeTemplate() {
             <p>{safe(contact.linkedin)}</p>
             <p>{safe(contact.portfolio)}</p>
           </aside>
-          <main className="w-2/3 p-6">
+          <main className="md:w-2/3 w-full p-4 md:p-6">
             {sections.map((s) => renderPreviewSection(s, t))}
           </main>
         </div>
@@ -462,16 +465,18 @@ export default function ResumeTemplate() {
       return (
         <div className="border rounded overflow-hidden">
           <header
-            className="p-6 text-white flex justify-between"
+            className="p-4 md:p-6 text-white flex flex-col md:flex-row md:justify-between gap-2"
             style={{
               background: `linear-gradient(135deg, ${t.secondary}, ${t.primary})`,
             }}
           >
             <div>
-              <h1 className="text-2xl font-bold mb-1">{safe(name)}</h1>
-              <p className="text-sm text-white opacity-90">{safe(title)}</p>
+              <h1 className="text-xl md:text-2xl font-bold mb-1">
+                {safe(name)}
+              </h1>
+              <p className="text-sm opacity-90">{safe(title)}</p>
             </div>
-            <div className="text-right text-sm text-white opacity-90">
+            <div className="text-sm opacity-90 md:text-right">
               <p>{safe(contact.email)}</p>
               <p>{safe(contact.phone)}</p>
               <p>{safe(contact.location)}</p>
@@ -479,15 +484,15 @@ export default function ResumeTemplate() {
               <p>{safe(contact.portfolio)}</p>
             </div>
           </header>
-          <main className="p-6">
+          <main className="p-4 md:p-6">
             {sections.map((s) => renderPreviewSection(s, t))}
           </main>
         </div>
       );
     }
     return (
-      <div className="p-6 border rounded">
-        <h1 className="text-xl font-bold mb-1">{safe(name)}</h1>
+      <div className="p-4 md:p-6 border rounded">
+        <h1 className="text-lg md:text-xl font-bold mb-1">{safe(name)}</h1>
         <p className="text-sm mb-4">{safe(title)}</p>
         <p className="text-xs mb-4 text-gray-600">
           {[safe(contact.email), safe(contact.phone), safe(contact.location)]
@@ -501,10 +506,10 @@ export default function ResumeTemplate() {
 
   // ---------- RENDER ----------
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-4">
+    <div className="max-w-5xl mx-auto p-4 md:p-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-3">
         <h1 className="text-2xl font-bold">Resume Builder</h1>
-        <div className="flex space-x-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center">
           <select
             value={template}
             onChange={(e) => setTemplate(e.target.value)}
@@ -530,13 +535,13 @@ export default function ResumeTemplate() {
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
             placeholder="AI context (e.g. Resume for software engineer with 5 years experience)"
-            className="border rounded px-2 py-1 w-64 text-sm"
+            className="border rounded px-2 py-1 w-full sm:w-64 text-sm"
             rows={2}
           />
           <button
             onClick={generateWithAI}
             disabled={loadingAI}
-            className={`px-4 py-2 rounded text-white flex items-center gap-2 ${
+            className={`px-3 py-2 rounded text-white text-sm flex items-center gap-2 ${
               loadingAI
                 ? "bg-green-400 cursor-not-allowed"
                 : "bg-green-600 hover:bg-green-700"
@@ -549,13 +554,13 @@ export default function ResumeTemplate() {
           </button>
           <button
             onClick={downloadPDF}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="px-3 py-2 bg-blue-600 text-white rounded text-sm"
           >
             Download PDF
           </button>
           <button
             onClick={() => setIsPreview(!isPreview)}
-            className="px-4 py-2 bg-gray-600 text-white rounded"
+            className="px-3 py-2 bg-gray-600 text-white rounded text-sm"
           >
             {isPreview ? "Back to Edit" : "Preview Resume"}
           </button>
@@ -568,53 +573,56 @@ export default function ResumeTemplate() {
             <input
               value={safe(name)}
               onChange={(e) => setName(e.target.value)}
-              className="text-2xl font-bold w-full mb-2 border rounded px-2 py-1"
+              className="text-xl md:text-2xl font-bold w-full mb-2 border rounded px-2 py-1"
             />
             <input
               value={safe(title)}
               onChange={(e) => setTitle(e.target.value)}
               className="text-gray-600 w-full mb-2 border rounded px-2 py-1"
             />
-            <input
-              value={safe(contact.email)}
-              onChange={(e) =>
-                setContact({ ...contact, email: e.target.value })
-              }
-              placeholder="Email"
-              className="border rounded px-2 py-1 w-full mb-1"
-            />
-            <input
-              value={safe(contact.phone)}
-              onChange={(e) =>
-                setContact({ ...contact, phone: e.target.value })
-              }
-              placeholder="Phone"
-              className="border rounded px-2 py-1 w-full mb-1"
-            />
-            <input
-              value={safe(contact.location)}
-              onChange={(e) =>
-                setContact({ ...contact, location: e.target.value })
-              }
-              placeholder="Location"
-              className="border rounded px-2 py-1 w-full mb-1"
-            />
-            <input
-              value={safe(contact.linkedin)}
-              onChange={(e) =>
-                setContact({ ...contact, linkedin: e.target.value })
-              }
-              placeholder="LinkedIn"
-              className="border rounded px-2 py-1 w-full mb-1"
-            />
-            <input
-              value={safe(contact.portfolio)}
-              onChange={(e) =>
-                setContact({ ...contact, portfolio: e.target.value })
-              }
-              placeholder="Portfolio"
-              className="border rounded px-2 py-1 w-full"
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <input
+                value={safe(contact.email)}
+                onChange={(e) =>
+                  setContact({ ...contact, email: e.target.value })
+                }
+                placeholder="Email"
+                className="border rounded px-2 py-1 w-full"
+              />
+              <input
+                value={safe(contact.phone)}
+                onChange={(e) =>
+                  setContact({ ...contact, phone: e.target.value })
+                }
+                placeholder="Phone"
+                className="border rounded px-2 py-1 w-full"
+              />
+              <input
+                value={safe(contact.location)}
+                onChange={(e) =>
+                  setContact({ ...contact, location: e.target.value })
+                }
+                placeholder="Location"
+                className="border rounded px-2 py-1 w-full"
+              />
+              <input
+                value={safe(contact.linkedin)}
+                onChange={(e) =>
+                  setContact({ ...contact, linkedin: e.target.value })
+                }
+                placeholder="LinkedIn"
+                className="border rounded px-2 py-1 w-full"
+              />
+              <input
+                value={safe(contact.portfolio)}
+                onChange={(e) =>
+                  setContact({ ...contact, portfolio: e.target.value })
+                }
+                placeholder="Portfolio"
+                className="border rounded px-2 py-1 w-full"
+                className="sm:col-span-2"
+              />
+            </div>
           </div>
           {/* Sections */}
           <DragDropContext onDragEnd={onDragEnd}>
@@ -645,55 +653,57 @@ export default function ResumeTemplate() {
           </DragDropContext>
           {/* Add Section */}
           <div className="mt-4">
-            <label className="mr-2 font-semibold">+ Add Section:</label>
-            <button
-              onClick={() => addSection("summary")}
-              className="px-2 py-1 bg-gray-500 rounded mr-2"
-            >
-              Summary
-            </button>
-            <button
-              onClick={() => addSection("skills")}
-              className="px-2 py-1 bg-gray-500 rounded mr-2"
-            >
-              Skills
-            </button>
-            <button
-              onClick={() => addSection("experience")}
-              className="px-2 py-1 bg-gray-500 rounded mr-2"
-            >
-              Work Experience
-            </button>
-            <button
-              onClick={() => addSection("education")}
-              className="px-2 py-1 bg-gray-500 rounded mr-2"
-            >
-              Education
-            </button>
-            <button
-              onClick={() => addSection("certifications")}
-              className="px-2 py-1 bg-gray-500 rounded mr-2"
-            >
-              Certifications
-            </button>
-            <button
-              onClick={() => addSection("projects")}
-              className="px-2 py-1 bg-gray-500 rounded mr-2"
-            >
-              Projects
-            </button>
-            <button
-              onClick={() => addSection("languages")}
-              className="px-2 py-1 bg-gray-500 rounded mr-2"
-            >
-              Languages
-            </button>
-            <button
-              onClick={() => addSection("hobbies")}
-              className="px-2 py-1 bg-gray-500 rounded"
-            >
-              Hobbies
-            </button>
+            <label className="block mb-2 font-semibold">+ Add Section:</label>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => addSection("summary")}
+                className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+              >
+                Summary
+              </button>
+              <button
+                onClick={() => addSection("skills")}
+                className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+              >
+                Skills
+              </button>
+              <button
+                onClick={() => addSection("experience")}
+                className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+              >
+                Work Experience
+              </button>
+              <button
+                onClick={() => addSection("education")}
+                className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+              >
+                Education
+              </button>
+              <button
+                onClick={() => addSection("certifications")}
+                className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+              >
+                Certifications
+              </button>
+              <button
+                onClick={() => addSection("projects")}
+                className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+              >
+                Projects
+              </button>
+              <button
+                onClick={() => addSection("languages")}
+                className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+              >
+                Languages
+              </button>
+              <button
+                onClick={() => addSection("hobbies")}
+                className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+              >
+                Hobbies
+              </button>
+            </div>
           </div>
         </>
       ) : (

@@ -96,10 +96,8 @@ export default function ResumeTemplate() {
     }
 
     // Use new helper
-    console.log("🔍 Calling increment for user:", profile.id);
     const ok = await canDownloadAndIncrement(profile.id);
-    console.log("✅ Increment result:", ok);
-    {
+    if (!ok) {
       alert("❌ You’ve reached your download limit.");
       return;
     }

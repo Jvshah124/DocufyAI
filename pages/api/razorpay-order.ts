@@ -19,7 +19,7 @@ export default async function handler(
     });
 
     const options = {
-      amount: 699 * 100, // ₹6.99 → amount is in paise
+      amount: 100 * 100, // ₹6.99 → amount is in paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       notes: {

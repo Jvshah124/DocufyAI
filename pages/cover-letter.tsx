@@ -76,7 +76,7 @@ export default function CoverLetter() {
     // Use the new helper
     const allowed = await canDownloadAndIncrement(user.id);
     if (!allowed) {
-      alert("You’ve reached your download limit. Please upgrade your plan.");
+      alert("❌ You’ve reached your download limit. Please upgrade your plan.");
       return;
     }
 

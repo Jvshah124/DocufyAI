@@ -86,17 +86,17 @@ export async function canDownloadAndIncrement(
     return false;
   }
 
-  // 🟢 Allow unlimited for admin or pro
-  if (profile.role === "admin" || profile.subscription_status === "pro") {
+  // 🟢 Admins: unlimited, no increment needed
+  if (profile.role === "admin") {
     return true;
   }
 
-  // Check free user limit
+  // 🟢 For free & pro users → enforce their docs_limit
   if (profile.docs_generated >= profile.docs_limit) {
     return false; // ❌ limit reached
   }
 
-  // Increment using the RPC
+  // Increment docs_generated
   const { error: updateError } = await supabase.rpc("increment_docs", {
     user_id: userId,
   });

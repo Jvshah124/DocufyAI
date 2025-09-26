@@ -98,7 +98,7 @@ export default function ResumeTemplate() {
     // Use new helper
     const ok = await canDownloadAndIncrement(profile.id);
     if (!ok) {
-      alert("❌ You’ve reached your download limit.");
+      alert("❌ You’ve reached your download limit. Please upgrade your plan.");
       return;
     }
 

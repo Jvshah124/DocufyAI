@@ -174,7 +174,7 @@ export default function InvoiceTemplate() {
     // ✅ Check if user can download
     const allowed = await canDownloadAndIncrement(user.id);
     if (!allowed) {
-      alert("You’ve reached your download limit or cannot download.");
+      alert("❌ You’ve reached your download limit. Please upgrade your plan.");
       return;
     }
 

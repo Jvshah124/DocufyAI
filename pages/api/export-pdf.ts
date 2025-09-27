@@ -414,7 +414,7 @@ export default async function handler(
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: { top: "20mm", right: "20mm", bottom: "20mm", left: "20mm" },
+      margin: { top: "15mm", right: "20mm", bottom: "20mm", left: "10mm" },
     });
 
     await browser.close();

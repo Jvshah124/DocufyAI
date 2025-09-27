@@ -122,46 +122,56 @@ export default async function handler(
 
     const buildClassic = () => `
   <div class="page classic">
-    <aside class="sidebar" style="background:${t.light}">
-      <h1>${safe(data?.name)}</h1>
-      <p class="subtitle">${safe(data?.title)}</p>
+    <aside class="sidebar" style="background:${
+      t.light
+    }; padding:20px; box-sizing:border-box;">
+      <h1 style="margin:0 0 6px 0;">${safe(data?.name)}</h1>
+      <p class="subtitle" style="margin:0 0 10px 0;">${safe(data?.title)}</p>
 
-      <h2 style="color:${t.primary}">Contact</h2>
-      <p>${safe(data?.contact?.email)}</p>
-      <p>${safe(data?.contact?.phone)}</p>
-      <p>${safe(data?.contact?.location)}</p>
-      <p>${safe(data?.contact?.linkedin)}</p>
-      <p>${safe(data?.contact?.portfolio)}</p>
+      <h2 style="color:${
+        t.primary
+      }; margin-top:8px; margin-bottom:6px;">Contact</h2>
+      <p style="margin:2px 0;">${safe(data?.contact?.email)}</p>
+      <p style="margin:2px 0;">${safe(data?.contact?.phone)}</p>
+      <p style="margin:2px 0;">${safe(data?.contact?.location)}</p>
+      <p style="margin:2px 0;">${safe(data?.contact?.linkedin)}</p>
+      <p style="margin:2px 0 12px 0;">${safe(data?.contact?.portfolio)}</p>
 
-      <!-- ✅ Skills with pill design -->
-      <div style="margin-top:20px;">
-        <h2 style="color:${t.primary}">Skills</h2>
-        <div class="skills" style="margin-top:10px;">
-          ${(data?.sections || [])
-            .filter((s: any) => s.type === "skills")
-            .map((s: any) =>
-              (s.items || [])
-                .map(
-                  (skill: any) =>
-                    `<span class="skill" 
-                        style="display:inline-block;
-                               margin:4px;
-                               padding:4px 8px;
-                               border-radius:12px;
-                               background:${t.light};
-                               color:${t.primary};
-                               font-size:12px;">
-                        ${safe(skill)}
-                      </span>`
-                )
-                .join("")
-            )
-            .join("")}
-        </div>
-      </div>
+      <!-- Skills moved here as pills, with slight contrast so they are always visible -->
+      ${(data?.sections || [])
+        .filter((s: any) => s.type === "skills")
+        .map(
+          (s: any) => `
+        <div style="margin-top:12px;">
+          <h2 style="color:${t.primary}; margin:0 0 8px 0;">${safe(
+            s.title
+          )}</h2>
+          <div class="skills" style="margin-top:6px; line-height:1;">
+            ${(s.items || [])
+              .map(
+                (skill: any) => `
+              <span class="skill" style="
+                display:inline-block;
+                margin:4px 6px 4px 0;
+                padding:6px 10px;
+                border-radius:12px;
+                background: rgba(255,255,255,0.95);
+                color: ${t.primary};
+                font-size:12px;
+                box-shadow: 0 0 0 1px ${t.primary}22 inset;
+                ">
+                ${safe(skill)}
+              </span>`
+              )
+              .join("")}
+          </div>
+        </div>`
+        )
+        .join("")}
+
     </aside>
 
-    <main class="content">
+    <main class="content" style="padding:20px; box-sizing:border-box;">
       ${(data?.sections || [])
         .filter((s: any) => s.type !== "skills")
         .map(renderSection)

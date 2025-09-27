@@ -120,23 +120,43 @@ export default async function handler(
       return "";
     };
 
-    const buildClassic = () => `
-      <div class="page classic">
-        <aside class="sidebar" style="background:${t.light}">
-          <h1>${safe(data?.name)}</h1>
-          <p class="subtitle">${safe(data?.title)}</p>
-          <h2 style="color:${t.primary}">Contact</h2>
-          <p>${safe(data?.contact?.email)}</p>
-          <p>${safe(data?.contact?.phone)}</p>
-          <p>${safe(data?.contact?.location)}</p>
-          <p>${safe(data?.contact?.linkedin)}</p>
-          <p>${safe(data?.contact?.portfolio)}</p>
-        </aside>
-        <main class="content">
-          ${(data?.sections || []).map(renderSection).join("")}
-        </main>
-      </div>
-    `;
+    const buildClassic = () => {
+      // Separate sections so we can pull skills out
+      const sections = data?.sections || [];
+      const skillsSection = sections.find((s: any) => s.type === "skills");
+      const otherSections = sections.filter((s: any) => s.type !== "skills");
+
+      return `
+        <div class="page classic">
+          <aside class="sidebar" style="background:${t.light}">
+            <h1>${safe(data?.name)}</h1>
+            <p class="subtitle">${safe(data?.title)}</p>
+            <h2 style="color:${t.primary}">Contact</h2>
+            <p>${safe(data?.contact?.email)}</p>
+            <p>${safe(data?.contact?.phone)}</p>
+            <p>${safe(data?.contact?.location)}</p>
+            <p>${safe(data?.contact?.linkedin)}</p>
+            <p>${safe(data?.contact?.portfolio)}</p>
+            ${
+              skillsSection
+                ? `
+              <div class="section">
+                <h2 style="color:${t.primary}">${safe(skillsSection.title)}</h2>
+                <div class="skills">
+                  ${(skillsSection.items || [])
+                    .map((s: any) => `<span class="skill">${safe(s)}</span>`)
+                    .join("")}
+                </div>
+              </div>`
+                : ""
+            }
+          </aside>
+          <main class="content">
+            ${otherSections.map(renderSection).join("")}
+          </main>
+        </div>
+      `;
+    };
     const buildModern = () => `
       <div class="page modern">
         <header class="header" style="background:linear-gradient(135deg, ${

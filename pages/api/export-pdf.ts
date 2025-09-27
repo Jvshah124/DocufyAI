@@ -376,10 +376,10 @@ export default async function handler(
           <meta name="viewport" content="width=device-width,initial-scale=1" />
           <style>
             body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
-            h1 { font-size: 26px; margin: 0 0 6px; }
-            h2 { font-size: 18px; margin: 10px 0; }
-            h3 { font-size: 14px; margin: 8px 0; }
-            p, li { font-size: 13px; margin: 4px 0; color: #222; }
+            h1 { font-size: 30px; margin: 0 0 6px; }
+            h2 { font-size: 20px; margin: 10px 0; }
+            h3 { font-size: 16px; margin: 8px 0; }
+            p, li { font-size: 14px; margin: 4px 0; color: #222; }
             ul { margin: 6px 0 12px 20px; padding: 0; }
             .section { margin-bottom: 14px; }
             .skills .skill { display:inline-block;margin:4px;padding:4px 8px;border-radius:12px;background:${t.light};color:${t.primary};font-size:12px; }
@@ -414,7 +414,7 @@ export default async function handler(
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: { top: "15mm", right: "20mm", bottom: "20mm", left: "10mm" },
+      margin: { top: "15mm", right: "20mm", bottom: "15mm", left: "10mm" },
     });
 
     await browser.close();

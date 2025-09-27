@@ -121,37 +121,45 @@ export default async function handler(
     };
 
     const buildClassic = () => {
-      // Separate sections so we can pull skills out
       const sections = data?.sections || [];
       const skillsSection = sections.find((s: any) => s.type === "skills");
       const otherSections = sections.filter((s: any) => s.type !== "skills");
 
       return `
         <div class="page classic">
-          <aside class="sidebar" style="background:${t.light}">
+          <aside class="sidebar" style="background:${t.light}; padding:20px;">
             <h1>${safe(data?.name)}</h1>
             <p class="subtitle">${safe(data?.title)}</p>
-            <h2 style="color:${t.primary}">Contact</h2>
-            <p>${safe(data?.contact?.email)}</p>
-            <p>${safe(data?.contact?.phone)}</p>
-            <p>${safe(data?.contact?.location)}</p>
-            <p>${safe(data?.contact?.linkedin)}</p>
-            <p>${safe(data?.contact?.portfolio)}</p>
+            
+            <h2 style="color:${t.primary}; margin-top:16px;">Contact</h2>
+            <p>📧 ${safe(data?.contact?.email)}</p>
+            <p>📞 ${safe(data?.contact?.phone)}</p>
+            <p>📍 ${safe(data?.contact?.location)}</p>
+            <p>🔗 ${safe(data?.contact?.linkedin)}</p>
+            <p>🌐 ${safe(data?.contact?.portfolio)}</p>
+    
             ${
               skillsSection
                 ? `
-              <div class="section">
-                <h2 style="color:${t.primary}">${safe(skillsSection.title)}</h2>
+              <div class="section" style="margin-top:20px;">
+                <h2 style="color:${t.primary}; margin-bottom:8px;">${safe(
+                    skillsSection.title
+                  )}</h2>
                 <div class="skills">
                   ${(skillsSection.items || [])
-                    .map((s: any) => `<span class="skill">${safe(s)}</span>`)
+                    .map(
+                      (s: any) =>
+                        `<span class="skill" style="display:inline-block;margin:4px;padding:4px 10px;border-radius:12px;background:${
+                          t.light
+                        };color:${t.primary};font-size:12px;">${safe(s)}</span>`
+                    )
                     .join("")}
                 </div>
               </div>`
                 : ""
             }
           </aside>
-          <main class="content">
+          <main class="content" style="padding:20px;">
             ${otherSections.map(renderSection).join("")}
           </main>
         </div>

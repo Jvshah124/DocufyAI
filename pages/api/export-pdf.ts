@@ -133,16 +133,26 @@ export default async function handler(
       <p>${safe(data?.contact?.linkedin)}</p>
       <p>${safe(data?.contact?.portfolio)}</p>
 
-      <!-- Skills moved here -->
+      <!-- ✅ Skills with pill design -->
       <div style="margin-top:20px;">
         <h2 style="color:${t.primary}">Skills</h2>
-        <div class="skills">
+        <div class="skills" style="margin-top:10px;">
           ${(data?.sections || [])
             .filter((s: any) => s.type === "skills")
             .map((s: any) =>
               (s.items || [])
                 .map(
-                  (skill: any) => `<span class="skill">${safe(skill)}</span>`
+                  (skill: any) =>
+                    `<span class="skill" 
+                        style="display:inline-block;
+                               margin:4px;
+                               padding:4px 8px;
+                               border-radius:12px;
+                               background:${t.light};
+                               color:${t.primary};
+                               font-size:12px;">
+                        ${safe(skill)}
+                      </span>`
                 )
                 .join("")
             )

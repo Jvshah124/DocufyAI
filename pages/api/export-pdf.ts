@@ -155,7 +155,7 @@ export default async function handler(
                 margin:4px 6px 4px 0;
                 padding:6px 10px;
                 border-radius:12px;
-                background: rgba(255,255,255,0.95);
+                background: ${t.light};
                 color: ${t.primary};
                 font-size:12px;
                 box-shadow: 0 0 0 1px ${t.primary}22 inset;

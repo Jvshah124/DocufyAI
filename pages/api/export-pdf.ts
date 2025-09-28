@@ -1,4 +1,4 @@
-// pages/api/export-pdf.ts
+// pagesNEW/api/export-pdf.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
@@ -10,10 +10,9 @@ export default async function handler(
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-  try {
-    // Accept an optional `font` parameter in the POST body.
-    const { docType, data, theme, font } = req.body || {};
 
+  try {
+    const { docType, data, theme } = req.body || {};
     const themes: any = {
       blue: { primary: "#1d4ed8", secondary: "#3b82f6", light: "#e0f2fe" },
       green: { primary: "#059669", secondary: "#10b981", light: "#d1fae5" },
@@ -23,31 +22,6 @@ export default async function handler(
     const t = themes[theme || "blue"];
     const safe = (v: any) => (v === undefined || v === null ? "" : v);
 
-    // -------------------
-    // FONT handling (safe whitelist)
-    // -------------------
-    const allowedFonts: Record<string, { link: string; family: string }> = {
-      Poppins: {
-        link: '<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">',
-        family: "'Poppins', Arial, sans-serif",
-      },
-      Roboto: {
-        link: '<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">',
-        family: "'Roboto', Arial, sans-serif",
-      },
-      Arial: {
-        link: "",
-        family: "Arial, sans-serif",
-      },
-    };
-
-    // Choose font (default Poppins). If unknown, fall back to Arial.
-    const selectedFontKey =
-      typeof font === "string" && allowedFonts[font] ? font : "Poppins";
-    const fontLink = allowedFonts[selectedFontKey].link || "";
-    const bodyFontFamily = allowedFonts[selectedFontKey].family;
-
-    // --- helpers same as before ---
     const renderItems = (items: any[] = []) =>
       (items || [])
         .map((it) =>
@@ -106,22 +80,22 @@ export default async function handler(
             ${(section.items || [])
               .map(
                 (job: any) => `
-              <div class="job">
-                <h3>${safe(job.role || job.text || "")}${
+                <div class="job">
+                  <h3>${safe(job.role || job.text || "")}${
                   job.company ? ` — ${safe(job.company)}` : ""
                 }</h3>
-                <p class="meta">${[safe(job.period), safe(job.location)]
-                  .filter(Boolean)
-                  .join(" • ")}</p>
-                ${
-                  job.achievements && job.achievements.length
-                    ? `<ul>${(job.achievements || [])
-                        .map((a: any) => `<li>${safe(a)}</li>`)
-                        .join("")}</ul>`
-                    : ""
-                }
-              </div>
-            `
+                  <p class="meta">${[safe(job.period), safe(job.location)]
+                    .filter(Boolean)
+                    .join(" • ")}</p>
+                  ${
+                    job.achievements && job.achievements.length
+                      ? `<ul>${(job.achievements || [])
+                          .map((a: any) => `<li>${safe(a)}</li>`)
+                          .join("")}</ul>`
+                      : ""
+                  }
+                </div>
+              `
               )
               .join("")}
           </div>
@@ -400,9 +374,14 @@ export default async function handler(
         <head>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width,initial-scale=1" />
-         ${fontLink}
-          body { font-family: ${bodyFontFamily}; margin: 0; padding: 20px; color: #333; }
-
+          <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+          <style>
+          body { 
+            font-family: 'Poppins', Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            color: #333; 
+          }
             h1 { font-size: 30px; margin: 0 0 6px; }
             h2 { font-size: 20px; margin: 10px 0; }
             h3 { font-size: 16px; margin: 8px 0; }

@@ -87,7 +87,6 @@ export default function CoverLetter() {
         body: JSON.stringify({
           docType: "cover_letter",
           data: letter,
-          font: "Poppins",
         }),
       });
 

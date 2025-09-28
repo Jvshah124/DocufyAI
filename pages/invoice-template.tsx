@@ -188,6 +188,7 @@ export default function InvoiceTemplate() {
           docType: "invoice",
           theme,
           data: invoice,
+          font: "Poppins",
         }),
       });
 

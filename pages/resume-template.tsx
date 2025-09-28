@@ -110,6 +110,7 @@ export default function ResumeTemplate() {
           docType: template,
           theme,
           data: { name, title, contact, sections },
+          font: "Poppins",
         }),
       });
 

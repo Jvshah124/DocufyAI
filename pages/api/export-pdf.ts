@@ -390,7 +390,16 @@ export default async function handler(
             .section { margin-bottom: 14px; }
             .skills .skill { display:inline-block;margin:4px;padding:4px 8px;border-radius:12px;background:${t.light};color:${t.primary};font-size:12px; }
             .classic { display:flex; }
-            .classic .sidebar { width:30%; padding:20px; box-sizing:border-box; }
+            .classic .sidebar {
+              width: 30%;
+              padding: 20px;
+              box-sizing: border-box;
+            
+              /* NEW rules */
+              max-height: 100vh;        /* limit to one viewport/page height */
+              overflow: hidden;         /* cut off content that doesn’t fit */
+              page-break-inside: avoid; /* keep it together, don’t split across pages */
+            }
             .classic .content { width:70%; padding:20px; box-sizing:border-box; }
             .modern .header { display:flex; justify-content:space-between; align-items:center; padding:20px 20px; color:white; }
             .modern .content { padding:20px; }

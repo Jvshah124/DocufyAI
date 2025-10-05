@@ -139,7 +139,7 @@ export default function Home() {
             />
             <PricingCard
               title="Pro"
-              price="$6.99/mo"
+              price="$5.65/mo"
               features={[
                 "AI-Tailored Documents",
                 "Premium Templates",
@@ -297,7 +297,7 @@ function PricingCard({
             onClick={() => setShowUPI(true)}
             className="inline-block px-6 py-2 rounded-lg font-semibold shadow-md bg-white text-purple-600 hover:bg-gray-200"
           >
-            Pay via UPI
+            Upgrade
           </button>
           <UpiModal open={showUPI} onClose={() => setShowUPI(false)} />
         </>
@@ -339,7 +339,8 @@ function UpiModal({ open, onClose }: { open: boolean; onClose: () => void }) {
         </h2>
 
         <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
-          Scan the QR code below to pay ₹699 using your preferred UPI app.
+          Scan the QR code below to pay ₹499 using your preferred UPI app. We’ll
+          upgrade your account within 24 hours.
         </p>
 
         {/* 🧾 Your QR Image */}

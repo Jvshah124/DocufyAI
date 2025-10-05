@@ -482,6 +482,7 @@ export default function ResumeTemplate() {
         </div>
       );
     }
+
     return (
       <div className="p-4 md:p-6 border rounded">
         <h1 className="text-lg md:text-xl font-bold mb-1">{safe(name)}</h1>

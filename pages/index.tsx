@@ -264,7 +264,6 @@ function TestimonialCard({
     </div>
   );
 }
-
 function PricingCard({
   title,
   price,
@@ -276,6 +275,7 @@ function PricingCard({
   features: string[];
   highlight: boolean;
 }) {
+  const [showUPI, setShowUPI] = React.useState(false);
   return (
     <div
       className={`p-8 rounded-2xl shadow-lg ${
@@ -291,16 +291,24 @@ function PricingCard({
           <li key={i}>✅ {f}</li>
         ))}
       </ul>
-      <Link
-        href="/auth"
-        className={`inline-block px-6 py-2 rounded-lg font-semibold shadow-md ${
-          highlight
-            ? "bg-white text-purple-600 hover:bg-gray-200"
-            : "bg-purple-600 text-white hover:bg-purple-700"
-        }`}
-      >
-        {highlight ? "Go Pro" : "Get Started"}
-      </Link>
+      {highlight ? (
+        <>
+          <button
+            onClick={() => setShowUPI(true)}
+            className="inline-block px-6 py-2 rounded-lg font-semibold shadow-md bg-white text-purple-600 hover:bg-gray-200"
+          >
+            Pay via UPI
+          </button>
+          <UpiModal open={showUPI} onClose={() => setShowUPI(false)} />
+        </>
+      ) : (
+        <Link
+          href="/auth"
+          className="inline-block px-6 py-2 rounded-lg font-semibold shadow-md bg-purple-600 text-white hover:bg-purple-700"
+        >
+          Get Started
+        </Link>
+      )}
     </div>
   );
 }
@@ -310,6 +318,56 @@ function FAQItem({ q, a }: { q: string; a: string }) {
     <div className="mb-6">
       <h4 className="font-semibold text-white">{q}</h4>
       <p className="text-gray-300 mt-2">{a}</p>
+    </div>
+  );
+}
+function UpiModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-lg text-center max-w-sm w-full relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-3 text-gray-500 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
+        >
+          ✕
+        </button>
+
+        <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+          Pay via UPI
+        </h2>
+
+        <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
+          Scan the QR code below to pay ₹699 using your preferred UPI app.
+        </p>
+
+        {/* 🧾 Your QR Image */}
+        <img
+          src="/myqr.jpg"
+          alt="UPI QR Code"
+          className="mx-auto w-48 h-48 rounded-lg shadow-md border border-gray-300 dark:border-gray-700"
+        />
+
+        <div className="mt-4 text-sm text-gray-700 dark:text-gray-300">
+          <p>
+            <strong>UPI ID:</strong> <br />
+            <span className="text-purple-600 dark:text-purple-400">
+              shahjv770@okaxis
+            </span>
+          </p>
+          <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+            After payment, share your transaction UTR number and screenshot with{" "}
+            <br />
+            <a
+              href="mailto:autodocai.noreply@gmail.com"
+              className="text-blue-500 hover:underline"
+            >
+              autodocai.noreply@gmail.com
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

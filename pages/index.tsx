@@ -97,30 +97,6 @@ export default function Home() {
           />
         </section>
 
-        {/* Testimonials */}
-        <section className="mt-24 max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-8">
-            What our users say
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <TestimonialCard
-              avatar="https://randomuser.me/api/portraits/women/44.jpg"
-              name="Sophie L."
-              feedback="DocufyAI helped me land 3 interviews in a week. The resumes look amazing!"
-            />
-            <TestimonialCard
-              avatar="https://randomuser.me/api/portraits/men/32.jpg"
-              name="James K."
-              feedback="Invoices are super professional now, and clients love the clarity. Huge time saver!"
-            />
-            <TestimonialCard
-              avatar="https://randomuser.me/api/portraits/women/68.jpg"
-              name="Emily R."
-              feedback="I used to struggle writing cover letters. With DocufyAI, it's stress-free!"
-            />
-          </div>
-        </section>
-
         {/* Pricing */}
         <section className="mt-24 max-w-6xl mx-auto">
           <h2 className="text-2xl font-bold text-white mb-8">
@@ -147,6 +123,30 @@ export default function Home() {
                 "Priority Support",
               ]}
               highlight={true}
+            />
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="mt-24 max-w-5xl mx-auto">
+          <h2 className="text-2xl font-bold text-white mb-8">
+            What our users say
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <TestimonialCard
+              avatar="https://randomuser.me/api/portraits/women/44.jpg"
+              name="Sophie L."
+              feedback="DocufyAI helped me land 3 interviews in a week. The resumes look amazing!"
+            />
+            <TestimonialCard
+              avatar="https://randomuser.me/api/portraits/men/32.jpg"
+              name="James K."
+              feedback="Invoices are super professional now, and clients love the clarity. Huge time saver!"
+            />
+            <TestimonialCard
+              avatar="https://randomuser.me/api/portraits/women/68.jpg"
+              name="Emily R."
+              feedback="I used to struggle writing cover letters. With DocufyAI, it's stress-free!"
             />
           </div>
         </section>
